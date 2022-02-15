@@ -48,20 +48,20 @@ describe('API tests', () => {
             })
          })
       })
-      describe('status 400: tests bad request paths for API', () => {
-         const badRequest = (request) => request.replace(/[a-z]$/i, 'badRequest')
-         const requestPaths = [
-            ['placeholderInput', 'placeholderExpected']
-         ]
-         test.concurrent.each(requestPaths)('.get(%s)', async (path, expected) => {
-            return request(app)
-            .get(path)
-            .expect(400)
-            .then(({ body: { message } }) => {
-               expect(message).toBe(expected)
-            })
-         })
-      })
+      // describe('status 400: tests bad request paths for API', () => {
+      //    const badRequest = (request) => request.replace(/[a-z]$/i, 'badRequest')
+      //    const requestPaths = [
+      //       ['placeholderInput', 'placeholderExpected']
+      //    ]
+      //    test.concurrent.each(requestPaths)('.get(%s)', async (path, expected) => {
+      //       return request(app)
+      //       .get(path)
+      //       .expect(400)
+      //       .then(({ body: { message } }) => {
+      //          expect(message).toBe(expected)
+      //       })
+      //    })
+      // })
       // describe('status 500: internat server error', async () => {
       //    test ('500: server error test', () => {
       //       const server500Mock = jest.fn().mockRejectedValue(new Error('internal server error...'))
