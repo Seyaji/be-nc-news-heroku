@@ -12,6 +12,7 @@ app.get('/api/topics', getTopics)
 
 // Error Handling
 app.all('/*', send404)
+
 app.use(handleCustomErrors)
 app.use(handlePSQLErrors)
 app.use(handleServerErrors) 

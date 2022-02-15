@@ -36,15 +36,15 @@ describe('API tests', () => {
       describe('status 404: tests API paths for 400 error handling', () => {
          const badPath = (path) => path.replace(/[a-z]$/i, 'badPath')
          const APIPaths = [
-            [badPath('/api/topics'), `cannot GET ${badPath('/api/topics')} (404)`]
+            [badPath('/api/topics'), `path not found...`]
          ]
          test.concurrent.each(APIPaths)('.get(%s)', (path, expected) => {
             return request(app)
             .get(path)
             .expect(404)
-            .then(({ error: { message } }) => {
-               console.log(message)
-               expect(message).toBe(expected)
+            .then(({body}) => {
+               console.log(body)
+               expect(body.message).toBe(expected)
             })
          })
       })
