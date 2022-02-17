@@ -31,10 +31,33 @@ describe('API tests', () => {
             })
          })
       }) // end of 1. GET /api/topics test
+      describe('2. POST /api/topics', () => {
+         test('status 201: responds with newly added topic to the database and checks to see if the topics have increased', () => {
+            const newTopic = { slug: 'coding', description: 'Javascript 101!' }
+            return request(app)
+            .post('/api/topics')
+            .send(newTopic)
+            .expect(201)
+            .then(({ body }) => {
+               expect(body.topics).toEqual({
+                  slug: 'coding',
+                  description: 'Javascript 101!'
+               })
+            })
+            .then(() => {
+               return db.query(`SELECT * FROM topics`)
+            })
+            .then((result) => {
+               expect(result.rows.length).toBe(4) // use toBe on primitive data types 
+            })
+         })
+      })
    }) // end of api topics tests
    describe('global error tests', () => {
-      describe('status 404: tests API paths for 400 error handling', () => {
-         const badPath = (path) => path.replace(/[a-z]$/i, 'badPath')
+      // Utility Test Functions
+      const badPath = (path) => path.replace(/[a-z]$/i, 'badPath')
+      
+      describe('status 404: tests GET API paths for 400 error handling', () => {
          const APIPaths = [
             [badPath('/api/topics'), `path not found...`]
          ]
@@ -42,7 +65,7 @@ describe('API tests', () => {
             return request(app)
             .get(path)
             .expect(404)
-            .then(({body}) => {
+            .then(({ body }) => {
                console.log(body)
                expect(body.message).toBe(expected)
             })
