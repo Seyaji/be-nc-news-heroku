@@ -32,7 +32,7 @@ describe('API tests', () => {
          })
       }) // end of 1. GET /api/topics test
       describe('2. POST /api/topics', () => {
-         test('status 201: responds with newly added park to the database', () => {
+         test('status 201: responds with newly added topic to the database and checks to see if the topics have increased', () => {
             const newTopic = { slug: 'coding', description: 'Javascript 101!' }
             return request(app)
             .post('/api/topics')
@@ -43,6 +43,12 @@ describe('API tests', () => {
                   slug: 'coding',
                   description: 'Javascript 101!'
                })
+            })
+            .then(() => {
+               return db.query(`SELECT * FROM topics`)
+            })
+            .then((result) => {
+               expect(result.rows.length).toBe(4) // use toBe on primitive data types 
             })
          })
       })
