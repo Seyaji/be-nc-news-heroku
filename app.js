@@ -1,5 +1,17 @@
-const {getTopics, getArticleByID, postTopic} = require('./controllers/topics.controller')
-const {send404, handleCustomErrors, handlePSQLErrors, handleServerErrors} = require('./errors')
+const {
+   getTopics,
+   postTopic,
+   getArticleByID,
+   patchArticleVotesByID,
+} = require('./controllers/app.controller')
+
+const {
+   send404,
+   handleCustomErrors,
+   handlePSQLErrors,
+   handleServerErrors
+} = require('./errors')
+
 const express = require('express')
 const app = express()
 
@@ -8,6 +20,9 @@ app.use(express.json())
 // Get Requests
 app.get('/api/topics', getTopics)
 app.get('/api/articles/:id', getArticleByID)
+
+// Patch Requests
+app.patch('/api/articles/:id', patchArticleVotesByID)
 
 // Post Requests
 app.post('/api/topics', postTopic)
