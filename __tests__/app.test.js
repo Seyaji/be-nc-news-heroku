@@ -58,7 +58,30 @@ describe('API tests', () => {
    })
 
    // -----------======> ARTICLES <======--------------
-
+   describe('1. ARTICLES GET /api/articles', () => {
+      test('STATUS 200: responds with an ARRAY of ARTICLES each containing a USERNAME and all ARTICLE PROPERTIES', () => {
+         return request(app)
+         .get('/api/articles')
+         .expect(200)
+         .then(({ body }) => {
+            const articles = body
+            expect(body).toBeInstanceOf(Array)
+            articles.forEach(article => {
+               expect(article).toEqual(
+                  expect.objectContaining({
+                     article_id: expect.any(Number),
+                     title: expect.any(String),
+                     topic: expect.any(String),
+                     author: expect.any(String),
+                     body: expect.any(String),
+                     created_at: expect.any(String),
+                     votes: expect.any(Number),
+                  })
+               )
+            })
+         })
+      })
+   })
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES BY ID GET /api/articles/:id', () => {
          test('STATUS 200: should RETURN the ARTICLE when given an ID', () => {

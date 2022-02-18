@@ -59,6 +59,21 @@ exports.insertTopic = async (slug, description) => {
    }
 }
 
+// -----------======> SELECT ARTICLES <======--------------
+exports.selectArticles = async () => {
+   try {
+      // QUERY DB for articles
+      const result = await db.query(`
+      SELECT * FROM articles;
+      `)
+
+      return result.rows
+   }
+   catch(error) {
+      next(error)
+   }
+}
+
 // -----------======> SELECT ARTICLE BY ID <======--------------
 exports.selectArticleByID = async (id) => {
    try {
