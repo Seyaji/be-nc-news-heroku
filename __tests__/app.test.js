@@ -58,32 +58,33 @@ describe('API tests', () => {
    })
 
    // -----------======> ARTICLES <======--------------
-   describe('1. ARTICLES GET /api/articles', () => {
-      test('STATUS 200: responds with an ARRAY of ARTICLES each containing a USERNAME and all ARTICLE PROPERTIES', () => {
-         return request(app)
-         .get('/api/articles')
-         .expect(200)
-         .then(({ body }) => {
-            const articles = body
-            expect(body).toBeInstanceOf(Array)
-            articles.forEach(article => {
-               expect(article).toEqual(
-                  expect.objectContaining({
-                     article_id: expect.any(Number),
-                     title: expect.any(String),
-                     topic: expect.any(String),
-                     author: expect.any(String),
-                     body: expect.any(String),
-                     created_at: expect.any(String),
-                     votes: expect.any(Number),
-                  })
-               )
+   
+   describe('\n\n/api/articles TESTS --------->', () => {
+      describe('\n1. ARTICLES GET /api/articles', () => {
+         test('STATUS 200: responds with an ARRAY of ARTICLES each containing a USERNAME and all ARTICLE PROPERTIES', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body
+               expect(body).toBeInstanceOf(Array)
+               articles.forEach(article => {
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
+               })
             })
          })
       })
-   })
-   describe('\n\n/api/articles TESTS --------->', () => {
-      describe('\n1. ARTICLES BY ID GET /api/articles/:id', () => {
+      describe('\n2. ARTICLES BY ID GET /api/articles/:id', () => {
          test('STATUS 200: should RETURN the ARTICLE when given an ID', () => {
             return request(app)
             .get('/api/articles/1')
@@ -104,7 +105,7 @@ describe('API tests', () => {
             })
          })
       })
-      describe('\n2. ARTICLES BY ID PATCH /api/articles/:id', () => {
+      describe('\n3. ARTICLES BY ID PATCH /api/articles/:id', () => {
          test('STATUS 201: RETURNS the article and INCREMENTS the article VOTES when given an ID and VALID body object', () => {
             const newVote = { inc_votes: 10 }
             return request(app)
@@ -163,7 +164,15 @@ describe('API tests', () => {
          })
       })
    })
-
+   describe('\n\n/api/comments TESTS', () => {
+      describe('1. COMMENTS PATCH /api/comments', () => {
+         test('STATUS 204: should delete a comment that has the matching comment id', () => {
+            return request(app)
+            .del('/api/comments/1')
+            .expect(204)
+         })
+      })
+   })
    // -----------======> ERRORS <======--------------
 
    describe('\n\nGLOBAL ERROR TESTS --------->', () => {
