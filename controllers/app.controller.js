@@ -1,4 +1,10 @@
-const {selectTopics, selectArticleByID, updateArticleVotesByID, insertTopic,} = require('../models/app.model')
+const {
+   selectTopics,
+   selectArticles,
+   selectArticleByID,
+   updateArticleVotesByID,
+   insertTopic,
+} = require('../models/app.model')
 
 // -----------======> TOPICS <======--------------
 // GET Topics
@@ -15,6 +21,13 @@ exports.postTopic = (req, res, next) => {
 }
 
 // -----------======> ARTICLES <======--------------
+// GET Articles
+exports.getArticles = (req, res, next) => {
+   selectArticles().then((result) => res.status(200).send(result))
+   .catch((error) => next(error))
+}
+
+
 // GET Article By ID
 exports.getArticleByID = (req, res, next) => {
    const { id }  = req.params

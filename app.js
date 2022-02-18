@@ -1,6 +1,7 @@
 const {
    getTopics,
    postTopic,
+   getArticles,
    getArticleByID,
    patchArticleVotesByID,
 } = require('./controllers/app.controller')
@@ -19,6 +20,7 @@ app.use(express.json())
 
 // Get Requests
 app.get('/api/topics', getTopics)
+app.get('/api/articles', getArticles)
 app.get('/api/articles/:id', getArticleByID)
 
 // Patch Requests
