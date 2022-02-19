@@ -20,16 +20,24 @@ const handleEmptyResult = (api, param, ) => {
    })
 }
 
+// -----------======> USERS <======--------------
+exports.selectUsers = async () => {
+   const result = await db.query('SELECT * FROM users;')
+   return result.rows
+}
 
-// -----------======> SELECT TOPICS <======--------------
+// -----------======> TOPICS <======--------------
+
+// SELECT Topics
 exports.selectTopics = async () => {
+
    // QUERY DB to return all items in topics table
    const result = await db.query('SELECT * FROM topics;')
    return result.rows
 
 }
 
-// -----------======> INSERT TOPICS <======--------------
+// INSERT Topics
 exports.insertTopic = async (slug, description) => {
 
    // CATCH undefined/missing paramaters AND invalid data types
@@ -50,7 +58,9 @@ exports.insertTopic = async (slug, description) => {
 
 }
 
-// -----------======> SELECT ARTICLES <======--------------
+// -----------======> ARTICLES <======--------------
+
+// SELECT Articles
 exports.selectArticles = async () => {
 
    // QUERY DB for articles
@@ -61,8 +71,9 @@ exports.selectArticles = async () => {
    return result.rows
 }
 
-// -----------======> SELECT ARTICLE BY ID <======--------------
+// SELECT Articles By ID
 exports.selectArticleByID = async (id) => {
+
    // CATCH Invalid Paramater Formats
    if(!+id) { return handleInvalid('Articles') }
 
@@ -79,7 +90,7 @@ exports.selectArticleByID = async (id) => {
 
 }
 
-// -----------======> UPDATE ARTICLE BY ID <======--------------
+//  UPDATE Article By ID 
 exports.updateArticleVotesByID = async (id, voteCount) => {
 
    // CATCH Invalid Paramater Formats
@@ -101,17 +112,19 @@ exports.updateArticleVotesByID = async (id, voteCount) => {
 
 }
 
-// -----------======> DELETE COMMENT <======--------------
+// -----------======> COMMENTs <======--------------
 
+// DELETE Comments
 exports.removeComment = async (id) => {
+
    // CATCH Invalid Paramater Formats
    if (!+id) return handleInvalid('Comments')
+
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
    DELETE FROM comments
    WHERE comment_id = $1
    RETURNING *;`,
    [id])
-   // console.log(result)
    return result
 }

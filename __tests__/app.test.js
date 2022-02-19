@@ -11,6 +11,21 @@ afterAll(() => {
 })
 
 describe('API tests', () => {
+   // -----------======> USERS <======--------------
+
+   describe('\n\n1. /api/users TESTS --------->', () => {
+      describe('\n1. USERS GET /api/users', () => {
+         test('STATUS 200: responds with an array of USERS containing the valid properties and data types', () => {
+            return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then(({ body }) => {
+               const users = body
+            })
+         })
+      })
+      
+   })
 
    // -----------======> TOPICS <======--------------
 
@@ -171,7 +186,7 @@ describe('API tests', () => {
       describe('1. COMMENTS PATCH /api/comments', () => {
          test('STATUS 204: should delete a comment that has the matching comment id', () => {
             return request(app)
-            .del('/api/comments/1')
+            .delete('/api/comments/1')
             .expect(204)
          })
       })

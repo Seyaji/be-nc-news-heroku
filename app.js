@@ -4,6 +4,7 @@ const {
    getArticles,
    getArticleByID,
    patchArticleVotesByID,
+   getUsers,
    deleteComment
 } = require('./controllers/app.controller')
 
@@ -23,12 +24,13 @@ app.use(express.json())
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:id', getArticleByID)
+app.get('/api/users', getUsers)
 
 // Patch Requests
 app.patch('/api/articles/:id', patchArticleVotesByID)
 
 // Delete Request
-app.del('/api/comments/:id', deleteComment)
+app.delete('/api/comments/:id', deleteComment)
 
 // Post Requests
 app.post('/api/topics', postTopic)

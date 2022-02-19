@@ -1,4 +1,5 @@
 const {
+   selectUsers,
    selectTopics,
    selectArticles,
    selectArticleByID,
@@ -7,11 +8,17 @@ const {
    insertTopic,
 } = require('../models/app.model')
 
+// -----------======> USERS <======--------------
+exports.getUsers = (req, res, next) => {
+   selectUsers().then(users => res.status(200).send(users))
+   .catch(error => next(error))
+}
+
 // -----------======> TOPICS <======--------------
 // GET Topics
 exports.getTopics = (req, res, next) => {
    selectTopics().then((result) => res.status(200).send(result))
-   .catch((error) => next(error));
+   .catch((error) => next(error)); 
 }
 
 // POST New Topic
