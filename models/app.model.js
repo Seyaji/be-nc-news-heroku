@@ -104,10 +104,8 @@ exports.updateArticleVotesByID = async (id, voteCount) => {
 // -----------======> DELETE COMMENT <======--------------
 
 exports.removeComment = async (id) => {
-   console.log(+'model', id)
    // CATCH Invalid Paramater Formats
-   if (typeof +id !== 'number' ) return handleInvalid('Comments')
-   console.log('error passed')
+   if (!+id) return handleInvalid('Comments')
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
    DELETE FROM comments

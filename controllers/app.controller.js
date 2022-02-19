@@ -51,7 +51,6 @@ exports.patchArticleVotesByID = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
    console.log('controller')
    const { id } = req.params
-   console.log(id)
    removeComment(id).then((result) => res.status(204).send(result))
    .catch((error) => next(error))
 }
