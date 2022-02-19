@@ -23,102 +23,97 @@ const handleEmptyResult = (api, param, ) => {
 
 // -----------======> SELECT TOPICS <======--------------
 exports.selectTopics = async () => {
-   try {
-      // QUERY DB to return all items in topics table
-      const result = await db.query('SELECT * FROM topics;')
-      return result.rows
-   }
-   catch (error) {
-      next(error)
-   }
+   // QUERY DB to return all items in topics table
+   const result = await db.query('SELECT * FROM topics;')
+   return result.rows
+
 }
 
 // -----------======> INSERT TOPICS <======--------------
 exports.insertTopic = async (slug, description) => {
-   try {
-      
-      // CATCH undefined/missing paramaters AND invalid data types
-      if (!slug || !description) { return handleInvalid('Topic') }
-      if (typeof slug !== 'string') { return handleInvalid('Topic')}
-      if (typeof description !== 'string') { return handleInvalid('Topic')}
-      
 
-      // INSERT into DB with invoked paramaters
-      const result = await db.query(`
-      INSERT INTO topics 
-      (slug, description)
-      VALUES 
-      ($1, $2)
-      RETURNING *;`, 
-      [slug, description])
-      return result.rows[0]
+   // CATCH undefined/missing paramaters AND invalid data types
+   if (!slug || !description) { return handleInvalid('Topic') }
+   if (typeof slug !== 'string') { return handleInvalid('Topic')}
+   if (typeof description !== 'string') { return handleInvalid('Topic')}
+   
 
-   }
-   catch (error) {
-      next(error)
-   }
+   // INSERT into DB with invoked paramaters
+   const result = await db.query(`
+   INSERT INTO topics 
+   (slug, description)
+   VALUES 
+   ($1, $2)
+   RETURNING *;`, 
+   [slug, description])
+   return result.rows[0]
+
 }
 
 // -----------======> SELECT ARTICLES <======--------------
 exports.selectArticles = async () => {
-   try {
-      // QUERY DB for articles
-      const result = await db.query(`
-      SELECT * FROM articles;
-      `)
 
-      return result.rows
-   }
-   catch(error) {
-      next(error)
-   }
+   // QUERY DB for articles
+   const result = await db.query(`
+   SELECT * FROM articles;
+   `)
+
+   return result.rows
 }
 
 // -----------======> SELECT ARTICLE BY ID <======--------------
 exports.selectArticleByID = async (id) => {
-   try {
-      // CATCH Invalid Paramater Formats
-      if(!+id) { return handleInvalid('Articles') }
+   // CATCH Invalid Paramater Formats
+   if(!+id) { return handleInvalid('Articles') }
 
-      // QUERY DB to find article by ID
-      const result = await db.query(`
-      SELECT * FROM articles
-      WHERE article_id = ${id};
-      `)
+   // QUERY DB to find article by ID
+   const result = await db.query(`
+   SELECT * FROM articles
+   WHERE article_id = ${id};
+   `)
 
-      // CATCH Empty Results
-      if (!result.rows[0]) { return handleEmptyResult('Article', id) }
+   // CATCH Empty Results
+   if (!result.rows[0]) { return handleEmptyResult('Article', id) }
 
-      return result.rows[0]
-   }
-   catch (error) {
-      next(error)
-   }
+   return result.rows[0]
+
 }
 
 // -----------======> UPDATE ARTICLE BY ID <======--------------
 exports.updateArticleVotesByID = async (id, voteCount) => {
-   try {
-      // CATCH Invalid Paramater Formats
-      if (!+id) { return handleInvalid('Articles')}
-      if (!+voteCount) { return handleInvalid('Articles')}
 
-      // UPDATE DB using invoked paramaters
-      const result = await db.query(`
-      UPDATE articles 
-      SET votes = votes + $1
-      WHERE article_id = $2
-      RETURNING *;`,
-      [voteCount, id])
+   // CATCH Invalid Paramater Formats
+   if (!+id) { return handleInvalid('Articles')}
+   if (!+voteCount) { return handleInvalid('Articles')}
 
-      // CATCH Empty Results
-      if (!result.rows[0]) { return handleEmptyResult('Article', id) }
+   // UPDATE DB using invoked paramaters
+   const result = await db.query(`
+   UPDATE articles 
+   SET votes = votes + $1
+   WHERE article_id = $2
+   RETURNING *;`,
+   [voteCount, id])
 
-      return result.rows[0]
-   }
-   catch {
-      next(error)
-   }
+   // CATCH Empty Results
+   if (!result.rows[0]) { return handleEmptyResult('Article', id) }
+
+   return result.rows[0]
+
 }
 
+// -----------======> DELETE COMMENT <======--------------
 
+exports.removeComment = async (id) => {
+   console.log(+'model', id)
+   // CATCH Invalid Paramater Formats
+   if (typeof +id !== 'number' ) return handleInvalid('Comments')
+   console.log('error passed')
+   // UPDATE DB using invoked paramaters
+   const result = await db.query(`
+   DELETE FROM comments
+   WHERE comment_id = $1
+   RETURNING *;`,
+   [id])
+   // console.log(result)
+   return result
+}

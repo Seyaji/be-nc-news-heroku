@@ -4,6 +4,7 @@ const {
    getArticles,
    getArticleByID,
    patchArticleVotesByID,
+   deleteComment
 } = require('./controllers/app.controller')
 
 const {
@@ -25,6 +26,9 @@ app.get('/api/articles/:id', getArticleByID)
 
 // Patch Requests
 app.patch('/api/articles/:id', patchArticleVotesByID)
+
+// Delete Request
+app.del('/api/comments/:id', deleteComment)
 
 // Post Requests
 app.post('/api/topics', postTopic)

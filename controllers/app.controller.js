@@ -3,6 +3,7 @@ const {
    selectArticles,
    selectArticleByID,
    updateArticleVotesByID,
+   removeComment,
    insertTopic,
 } = require('../models/app.model')
 
@@ -40,5 +41,17 @@ exports.patchArticleVotesByID = (req, res, next) => {
    const { id } = req.params
    const { inc_votes } = req.body
    updateArticleVotesByID(id, inc_votes).then((result) => res.status(201).send(result))
+   .catch((error) => next(error))
+}
+
+
+// -----------======> COMMENTS <======--------------
+
+// DELETE comment by ID
+exports.deleteComment = (req, res, next) => {
+   console.log('controller')
+   const { id } = req.params
+   console.log(id)
+   removeComment(id).then((result) => res.status(204).send(result))
    .catch((error) => next(error))
 }
