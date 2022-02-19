@@ -164,6 +164,9 @@ describe('API tests', () => {
          })
       })
    })
+
+   // -----------======> COMMENTS <======--------------
+
    describe('\n\n/api/comments TESTS', () => {
       describe('1. COMMENTS PATCH /api/comments', () => {
          test('STATUS 204: should delete a comment that has the matching comment id', () => {
@@ -173,6 +176,7 @@ describe('API tests', () => {
          })
       })
    })
+   
    // -----------======> ERRORS <======--------------
 
    describe('\n\nGLOBAL ERROR TESTS --------->', () => {
