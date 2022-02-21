@@ -5,7 +5,8 @@ const {
    getArticleByID,
    patchArticleVotesByID,
    getUsers,
-   deleteComment
+   getCommentsByArticle,
+   deleteComment,
 } = require('./controllers/app.controller')
 
 const {
@@ -20,25 +21,36 @@ const app = express()
 
 app.use(express.json())
 
-// Get Requests
+// -----------~~~=:%$}> GET REQUEST <{$%:=~~~-----------
+// TOPICS
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
+
+// ARTICLES
 app.get('/api/articles/:id', getArticleByID)
+app.get('/api/articles/:id/comments', getCommentsByArticle)
+
+// USERS
 app.get('/api/users', getUsers)
 
-// Patch Requests
+
+// -----------~~~=:%$}> PATCH REQUESTS <{$%:=~~~-----------
+// ARTICLES
 app.patch('/api/articles/:id', patchArticleVotesByID)
 
-// Delete Request
-app.delete('/api/comments/:id', deleteComment)
 
-// Post Requests
+// -----------~~~=:%$}> POST REQUESTS <{$%:=~~~-----------
+// TOPICS
 app.post('/api/topics', postTopic)
 
 
-// Error Handling
-app.all('/*', send404)
+// -----------~~~=:%$}> DELETE REQUESTS <{$%:=~~~-----------
+// COMMENTS
+app.delete('/api/comments/:id', deleteComment)
 
+
+// -----------~~~=:%$}> ERROR HANDLING <{$%:=~~~-----------
+app.all('/*', send404)
 app.use(handleCustomErrors)
 app.use(handlePSQLErrors)
 app.use(handleServerErrors) 
