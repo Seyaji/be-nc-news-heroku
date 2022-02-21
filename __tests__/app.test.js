@@ -11,7 +11,7 @@ afterAll(() => {
 })
 
 describe('API tests', () => {
-   // -----------======> USERS <======--------------
+   // -----------~~~=:%$}> USERS <{$%:=~~~-----------
 
    describe('\n\n1. /api/users TESTS --------->', () => {
       describe('\n1. USERS GET /api/users', () => {
@@ -27,7 +27,7 @@ describe('API tests', () => {
       
    })
 
-   // -----------======> TOPICS <======--------------
+   // -----------~~~=:%$}> TOPICS <{$%:=~~~-----------
 
    describe('\n\n/api/topics TESTS --------->', () => {
       describe('\n1. TOPICS GET /api/topics', () => {
@@ -72,7 +72,7 @@ describe('API tests', () => {
       })
    })
 
-   // -----------======> ARTICLES <======--------------
+   // -----------~~~=:%$}> ARTICLES <{$%:=~~~-----------
    
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES GET /api/articles', () => {
@@ -181,10 +181,33 @@ describe('API tests', () => {
       })
    })
 
-   // -----------======> COMMENTS <======--------------
+   // -----------~~~=:%$}> COMMENTS <{$%:=~~~-----------
 
-   describe('\n\n/api/comments TESTS', () => {
-      describe('1. COMMENTS PATCH /api/comments', () => {
+   describe('\n1. COMMENTS GET/api/comments TESTS', () => {
+      test('STATUS 200: should return an array of all comments', () => {
+         return request(app)
+         .get('/api/articles/1/comments')
+         .expect(200)
+         .then((result) => {
+            const comments = result.body
+            expect(comments).toBeInstanceOf(Array)
+            comments.forEach((comment) => {
+               expect(comment).toEqual(
+                  expect.objectContaining({
+                     comment_id: expect.any(Number),
+                     votes: expect.any(Number),
+                     created_at: expect.any(String),
+                     author: expect.any(String),
+                     body: expect.any(String),
+                  })
+               )
+            })
+         
+            
+         })
+
+      })
+      describe('\n2. COMMENTS PATCH /api/comments', () => {
          test('STATUS 204: should delete a comment that has the matching comment id', () => {
             return request(app)
             .delete('/api/comments/1')
@@ -193,7 +216,7 @@ describe('API tests', () => {
       })
    })
    
-   // -----------======> ERRORS <======--------------
+   // -----------~~~=:%$}> ERROS <{$%:=~~~-----------
 
    describe('\n\nGLOBAL ERROR TESTS --------->', () => {
       describe('\nSTATUS 404: tests for non existent paths', () => {

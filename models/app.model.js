@@ -1,7 +1,6 @@
 const db = require('../db/connection')
-const { forEach } = require('../db/data/test-data/articles')
 
-// -----------======> UTILITY PROMISE REJECTS <======--------------
+// -----------~~~=:%$}> UTILITY PROMISE REJECTS <{$%:=~~~-----------
 
 // RETURNS a rejected promise for invalid PARAMETERS ---> this is to be wrapped in a if / logic block to function properly
 const handleInvalid = (api) => {
@@ -20,16 +19,16 @@ const handleEmptyResult = (api, param, ) => {
    })
 }
 
-// -----------======> USERS <======--------------
+// -----------~~~=:%$}> USERS <{$%:=~~~-----------
 exports.selectUsers = async () => {
    const result = await db.query('SELECT * FROM users;')
    return result.rows
 }
 
-// -----------======> COMMENTs <======--------------
+// -----------~~~=:%$}> COMMENTS <{$%:=~~~-----------
 
 // SELECT Comments
-const selectComments = async (id) => {
+const selectCommentsInternal = async (id, internal = false) => {
    if (!+id) { return handleInvalid('Comments')}
 
    // UPDATE DB using invoked paramaters
@@ -37,10 +36,15 @@ const selectComments = async (id) => {
    SELECT * FROM comments
    WHERE article_id = $1`,
    [id])
+
    // CATCH Empty Results
    if (!result.rows) { return handleEmptyResult('Comments', id) }
-   return result.rows.length
+
+   // DETERMINE OUTPUT based on query
+   if (internal) return result.rows.length
+   if (!internal) return result.rows
 }
+exports.selectComments = (id) => selectCommentsInternal(id)
 
 // DELETE Comments
 exports.removeComment = async (id) => {
@@ -57,7 +61,7 @@ exports.removeComment = async (id) => {
    return result
 }
 
-// -----------======> TOPICS <======--------------
+// -----------~~~=:%$}> TOPICS <{$%:=~~~-----------
 
 // SELECT Topics
 exports.selectTopics = async () => {
@@ -89,7 +93,7 @@ exports.insertTopic = async (slug, description) => {
 
 }
 
-// -----------======> ARTICLES <======--------------
+// -----------~~~=:%$}> ARTICLES <{$%:=~~~-----------
 
 // SELECT Articles
 exports.selectArticles = async () => {
@@ -119,7 +123,7 @@ exports.selectArticleByID = async (id) => {
 
    // APPEND Comment Count
    const {...rest} = result.rows[0]
-   rest.comment_count = await selectComments(id)
+   rest.comment_count = await selectCommentsInternal(id, true)
    
 
 
