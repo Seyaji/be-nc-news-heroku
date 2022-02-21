@@ -26,6 +26,37 @@ exports.selectUsers = async () => {
    return result.rows
 }
 
+// -----------======> COMMENTs <======--------------
+
+// SELECT Comments
+const selectComments = async (id) => {
+   if (!+id) { return handleInvalid('Comments')}
+
+   // UPDATE DB using invoked paramaters
+   const result = await db.query(`
+   SELECT * FROM comments
+   WHERE article_id = $1`,
+   [id])
+   // CATCH Empty Results
+   if (!result.rows) { return handleEmptyResult('Comments', id) }
+   return result.rows.length
+}
+
+// DELETE Comments
+exports.removeComment = async (id) => {
+
+   // CATCH Invalid Paramater Formats
+   if (!+id) return handleInvalid('Comments')
+
+   // UPDATE DB using invoked paramaters
+   const result = await db.query(`
+   DELETE FROM comments
+   WHERE comment_id = $1
+   RETURNING *;`,
+   [id])
+   return result
+}
+
 // -----------======> TOPICS <======--------------
 
 // SELECT Topics
@@ -86,7 +117,13 @@ exports.selectArticleByID = async (id) => {
    // CATCH Empty Results
    if (!result.rows[0]) { return handleEmptyResult('Article', id) }
 
-   return result.rows[0]
+   // APPEND Comment Count
+   const {...rest} = result.rows[0]
+   rest.comment_count = await selectComments(id)
+   
+
+
+   return rest
 
 }
 
@@ -112,19 +149,3 @@ exports.updateArticleVotesByID = async (id, voteCount) => {
 
 }
 
-// -----------======> COMMENTs <======--------------
-
-// DELETE Comments
-exports.removeComment = async (id) => {
-
-   // CATCH Invalid Paramater Formats
-   if (!+id) return handleInvalid('Comments')
-
-   // UPDATE DB using invoked paramaters
-   const result = await db.query(`
-   DELETE FROM comments
-   WHERE comment_id = $1
-   RETURNING *;`,
-   [id])
-   return result
-}
