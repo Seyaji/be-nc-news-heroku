@@ -1,5 +1,6 @@
 const {
    selectUsers,
+   selectUserByUsername,
    selectTopics,
    selectArticles,
    selectArticleByID,
@@ -13,6 +14,12 @@ const {
 // -----------~~~=*%$}> USERS <{$%&=~~~-----------
 exports.getUsers = (req, res, next) => {
    selectUsers().then(users => res.status(200).send(users))
+   .catch(error => next(error))
+}
+
+exports.getUserByUsername = (req, res, next) => {
+   const { username } = req.params
+   selectUserByUsername(username).then((result) => res.status(200).send(result))
    .catch(error => next(error))
 }
 

@@ -32,6 +32,21 @@ exports.selectUsers = async () => {
    return result.rows
 }
 
+exports.selectUserByUsername = async (username) => {
+
+   // if (!username) { return handleInvalid('Users')}
+   if (typeof username !== 'string') { return handleInvalid('Users')}
+
+   const result = await db.query(`
+   SELECT * FROM users
+   WHERE username = $1`,
+   [username])
+
+   if (!result.rows[0]) { return handleEmptyResult('Users', username) }
+
+   return result.rows[0]
+}
+
 // -----------~~~=*%$}> COMMENTS <{$%*=~~~-----------
 
 // SELECT Comments
@@ -145,8 +160,7 @@ exports.selectArticleByID = async (id) => {
    // QUERY DB to find article by ID
    const result = await db.query(`
    SELECT * FROM articles
-   WHERE article_id = ${id};
-   `)
+   WHERE article_id = ${id};`)
 
    // CATCH Empty Results
    if (!result.rows[0]) { return handleEmptyResult('Article', id) }
