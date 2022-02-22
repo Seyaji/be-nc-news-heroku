@@ -12,13 +12,13 @@ const {
 } = require('../models/app.model')
 
 // -----------~~~=*%$}> USERS <{$%&=~~~-----------
-// GET Users
+// GET Users 
 exports.getUsers = (req, res, next) => {
    selectUsers().then(users => res.status(200).send(users))
    .catch(error => next(error))
 }
 
-// GET User By Username
+// GET User By Username 
 exports.getUserByUsername = (req, res, next) => {
    const { username } = req.params
    selectUserByUsername(username).then((result) => res.status(200).send(result))
