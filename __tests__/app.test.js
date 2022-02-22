@@ -11,7 +11,6 @@ afterAll(() => {
 })
 
 describe('API tests', () => {
-
    // -----------~~~=*%$}> USERS <{$%*=~~~-----------
 
    describe('\n\n1. /api/users TESTS --------->', () => {
@@ -74,7 +73,7 @@ describe('API tests', () => {
    })
 
    // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
-
+   
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES GET /api/articles', () => {
          test('STATUS 200: responds with an ARRAY of ARTICLES each containing a USERNAME and all ARTICLE PROPERTIES', () => {
