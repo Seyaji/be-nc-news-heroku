@@ -10,7 +10,6 @@ const handleInvalid = (api) => {
    })
 }
 
-
 // RETURNS a rejected promise for non-existent IDs ---> this is to be wrapped in a if / logic block to function properly
 const handleEmptyResult = (api, param, ) => {
    return Promise.reject({
@@ -19,7 +18,6 @@ const handleEmptyResult = (api, param, ) => {
    })
 }
 
-
 // -----------~~~=*%$}> UTILITY FUNCTIONS <{$%*=~~~-----------
 const checkValidity = (array, type) => {
    return !type 
@@ -27,7 +25,6 @@ const checkValidity = (array, type) => {
    : array.some(item => typeof item !== type)
 
 }
-
 
 // -----------~~~=*%$}> USERS <{$%*=~~~-----------
 exports.selectUsers = async () => {
@@ -57,11 +54,12 @@ const selectComments = async (id, internal = false) => {
 }
 exports.selectComments = (id) => selectComments(id)
 
-
 // POST Comment
 exports.insertComment = async (id, username, body) => {
+   
    // CATCH Variables
    const params = [ username, body ]
+
    // CATCH undefined/missing paramaters AND invalid data types
    if (!body || ! username || !+id) { return handleInvalid('Comments') }
    if (checkValidity(params, 'string')) { return handleInvalid('Comments')}
