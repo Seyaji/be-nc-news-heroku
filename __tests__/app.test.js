@@ -10,10 +10,10 @@ afterAll(() => {
    if (db.end) db.end()
 })
 
-describe('API tests', () => {
+describe('\nAPI Tests', () => {
    // -----------~~~=*%$}> USERS <{$%*=~~~-----------
 
-   describe('\n\n1. /api/users TESTS --------->', () => {
+   describe('\n/api/users TESTS --------->', () => {
       describe('\n1. USERS GET /api/users', () => {
          test('STATUS 200: responds with an array of USERS containing the valid properties and data types', () => {
             return request(app)
@@ -25,7 +25,7 @@ describe('API tests', () => {
             })
          })
       })
-      describe('2. USERS GET BY USERNAME GET /api/users/:username', () => {
+      describe('\n2. USERS GET BY USERNAME GET /api/users/:username', () => {
          test('STATUS 200: responds with a user object containing the correct properties', () => {
             return request(app)
             .get('/api/users/lurker')

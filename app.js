@@ -23,7 +23,7 @@ const app = express()
 
 app.use(express.json())
 
-// -----------~~~=*%$}> GET REQUEST <{$%*=~~~-----------
+// -----------~~~=*%$}> GET REQUESTS <{$%*=~~~-----------
 // TOPICS
 app.get('/api/topics', getTopics)
 

@@ -27,11 +27,13 @@ const checkValidity = (array, type) => {
 }
 
 // -----------~~~=*%$}> USERS <{$%*=~~~-----------
+// SELECT Users
 exports.selectUsers = async () => {
    const result = await db.query('SELECT * FROM users;')
    return result.rows
 }
 
+// SELECT Users By Username
 exports.selectUserByUsername = async (username) => {
 
    // if (!username) { return handleInvalid('Users')}
