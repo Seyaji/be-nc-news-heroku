@@ -21,6 +21,24 @@ describe('API tests', () => {
             .expect(200)
             .then(({ body }) => {
                const users = body
+               expect(users).toBeInstanceOf(Array)
+            })
+         })
+      })
+      describe('2. USERS GET BY USERNAME GET /api/users/:username', () => {
+         test('STATUS 200: responds with a user object containing the correct properties', () => {
+            return request(app)
+            .get('/api/users/lurker')
+            .expect(200)
+            .then(({ body }) => {
+               const user = body
+               expect(body).toEqual(
+                  expect.objectContaining({
+                     username: expect.any(String),
+                     avatar_url: expect.any(String),
+                     name: expect.any(String)
+                  })
+               )
             })
          })
       })
@@ -260,11 +278,30 @@ describe('API tests', () => {
       describe('\nSTATUS 404: tests parametric endpoints for GET requests that dont exist or are the incorrect format', () => {
          const parametricEndpoints = [
             // GET Testing
-            ['START\n', '/GET TESTING --------->', 'path not found...'],
-            ['ARTICLES', '/ARTICLES', 'path not found...'],
-            ['GET', '/api/articles/98765', 'Article id: \'98765\' either does not exist or cannot be found'],
-            ['GET', '/api/articles/BadID-Format', 'The request to Articles cannot be completed check for invalid data types, empty data or non existent endopints'],
-            ['^^END OF ABOVE^^', '/---------------------', 'path not found...'],
+            [
+               'START\n', '/GET ARTICLES TESTING --------->', 
+               'path not found...'
+            ],
+            [
+               'GET', '/api/articles/98765', 
+               'Article id: \'98765\' either does not exist or cannot be found'
+            ],
+            [
+               'GET', '/api/articles/BadID-Format', 
+               'The request to Articles cannot be completed check for invalid data types, empty data or non existent endopints'
+            ],
+            [
+               '^^END OF ABOVE^^', '/---------------------', 'path not found...'
+            ],
+            [
+               'START\n', '/GET USERS TESTING --------->', 
+               'path not found...'
+            ],
+            [
+               'USERS', '/api/users/1',
+               'Users id: \'1\' either does not exist or cannot be found'
+            ],
+            
          ]
          test.concurrent.each(parametricEndpoints)
          ('%s(%s)', (reqName, path, expected) => {

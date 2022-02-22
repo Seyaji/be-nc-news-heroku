@@ -5,6 +5,7 @@ const {
    getArticleByID,
    patchArticleVotesByID,
    getUsers,
+   getUserByUsername,
    getCommentsByArticle,
    postComment,
    deleteComment,
@@ -25,14 +26,15 @@ app.use(express.json())
 // -----------~~~=*%$}> GET REQUEST <{$%*=~~~-----------
 // TOPICS
 app.get('/api/topics', getTopics)
-app.get('/api/articles', getArticles)
 
 // ARTICLES
+app.get('/api/articles', getArticles)
 app.get('/api/articles/:id', getArticleByID)
 app.get('/api/articles/:id/comments', getCommentsByArticle)
 
 // USERS
 app.get('/api/users', getUsers)
+app.get('/api/users/:username', getUserByUsername)
 
 
 // -----------~~~=*%$}> PATCH REQUESTS <{$%*=~~~-----------
