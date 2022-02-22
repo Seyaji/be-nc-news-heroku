@@ -3,19 +3,20 @@ const {
    selectTopics,
    selectArticles,
    selectArticleByID,
-   selectComments,
    updateArticleVotesByID,
+   selectComments,
+   insertComment,
    removeComment,
    insertTopic,
 } = require('../models/app.model')
 
-// -----------~~~=:%$}> USERS <{$%:=~~~-----------
+// -----------~~~=*%$}> USERS <{$%&=~~~-----------
 exports.getUsers = (req, res, next) => {
    selectUsers().then(users => res.status(200).send(users))
    .catch(error => next(error))
 }
 
-// -----------~~~=:%$}> TOPICS <{$%:=~~~-----------
+// -----------~~~=*%$}> TOPICS <{$%*=~~~-----------
 // GET Topics
 exports.getTopics = (req, res, next) => {
    selectTopics().then((result) => res.status(200).send(result))
@@ -29,7 +30,7 @@ exports.postTopic = (req, res, next) => {
    .catch((error) => next(error));
 }
 
-// -----------~~~=:%$}> ARTICLES <{$%:=~~~-----------
+// -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
 // GET Articles
 exports.getArticles = (req, res, next) => {
    selectArticles().then((result) => res.status(200).send(result))
@@ -52,12 +53,21 @@ exports.patchArticleVotesByID = (req, res, next) => {
 }
 
 
-// -----------~~~=:%$}> COMMENTS <{$%:=~~~-----------
+// -----------~~~=*%$}> COMMENTS <{$%*=~~~-----------
 
 // GET Comments By Article ID
 exports.getCommentsByArticle = (req, res, next) => {
    const { id } = req.params
    selectComments(id).then((result) => res.status(200).send(result))
+   .catch((error) => next(error))
+}
+
+// POST COMMENT By Article ID
+exports.postComment = (req, res, next) => {
+   const { id } = req.params
+   const { username, body } = req.body
+   insertComment(id, username, body).then((comment) => res.status(201).send(comment))
+   .catch((error) => next(error))
 }
 
 // DELETE comment by ID

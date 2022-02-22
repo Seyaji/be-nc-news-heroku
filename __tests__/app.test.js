@@ -11,7 +11,7 @@ afterAll(() => {
 })
 
 describe('API tests', () => {
-   // -----------~~~=:%$}> USERS <{$%:=~~~-----------
+   // -----------~~~=*%$}> USERS <{$%*=~~~-----------
 
    describe('\n\n1. /api/users TESTS --------->', () => {
       describe('\n1. USERS GET /api/users', () => {
@@ -27,7 +27,7 @@ describe('API tests', () => {
       
    })
 
-   // -----------~~~=:%$}> TOPICS <{$%:=~~~-----------
+   // -----------~~~=*%$}> TOPICS <{$%*=~~~-----------
 
    describe('\n\n/api/topics TESTS --------->', () => {
       describe('\n1. TOPICS GET /api/topics', () => {
@@ -72,7 +72,7 @@ describe('API tests', () => {
       })
    })
 
-   // -----------~~~=:%$}> ARTICLES <{$%:=~~~-----------
+   // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
    
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES GET /api/articles', () => {
@@ -181,31 +181,33 @@ describe('API tests', () => {
       })
    })
 
-   // -----------~~~=:%$}> COMMENTS <{$%:=~~~-----------
+   // -----------~~~=*%$}> COMMENTS <{$%*=~~~-----------
 
-   describe('\n1. COMMENTS GET/api/comments TESTS', () => {
-      test('STATUS 200: should return an array of all comments', () => {
-         return request(app)
-         .get('/api/articles/1/comments')
-         .expect(200)
-         .then((result) => {
-            const comments = result.body
-            expect(comments).toBeInstanceOf(Array)
-            comments.forEach((comment) => {
-               expect(comment).toEqual(
-                  expect.objectContaining({
-                     comment_id: expect.any(Number),
-                     votes: expect.any(Number),
-                     created_at: expect.any(String),
-                     author: expect.any(String),
-                     body: expect.any(String),
-                  })
-               )
-            })
-         
+   describe('\n\n/api/comments TESTS --------->', () => {
+      describe('\n1. COMMENTS GET/api/comments TESTS', () => {
+         test('STATUS 200: should return an array of all comments', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then((result) => {
+               const comments = result.body
+               expect(comments).toBeInstanceOf(Array)
+               comments.forEach((comment) => {
+                  expect(comment).toEqual(
+                     expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                     })
+                  )
+               })
             
+               
+            })
+   
          })
-
       })
       describe('\n2. COMMENTS PATCH /api/comments', () => {
          test('STATUS 204: should delete a comment that has the matching comment id', () => {
@@ -214,9 +216,30 @@ describe('API tests', () => {
             .expect(204)
          })
       })
+      describe('\n3. COMMENTS POST /api/articles/:id/comments', () => {
+         test('STATUS 201: should POST  a new comment to the given article ID', () => {
+            const newComment = { username: 'lurker', body: 'This article does not use TDD....' }
+            return request(app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(201)
+            .then(({ body }) => {
+               expect(body).toEqual(
+                  expect.objectContaining({
+                     article_id: expect.any(Number),
+                     comment_id: expect.any(Number),
+                     votes: expect.any(Number),
+                     created_at: expect.any(String),
+                     author: expect.any(String),
+                     body: expect.any(String),
+                  })
+               )
+            })
+         })
+      })
    })
    
-   // -----------~~~=:%$}> ERROS <{$%:=~~~-----------
+   // -----------~~~=*%$}> ERROS <{$%*=~~~-----------
 
    describe('\n\nGLOBAL ERROR TESTS --------->', () => {
       describe('\nSTATUS 404: tests for non existent paths', () => {
@@ -287,13 +310,14 @@ describe('API tests', () => {
             .send(body)
             .expect(404)
             .then(({ body: { message } }) => {
-
                expect(message).toBe(expected)
             })
          })
       })
       describe('\nSTATUS 404: tests parametric endpoints for POST requests that are incomplete or in the incorrect format', () => {
+         jest.setTimeout(500)
          const parametricEndpoints = [
+            // TOPICS TESTS
             [
                'START API TOPICS POST TESTING --------->', '/api/topics', 
                'The request to Topic cannot be completed check for invalid data types, empty data or non existent endopints',
@@ -302,10 +326,10 @@ describe('API tests', () => {
             [
                'POST Incomplete', '/api/topics', 
                'The request to Topic cannot be completed check for invalid data types, empty data or non existent endopints',
-               { slug: '' }
+               { description: 'hello' }
             ],
             [
-               'POST BAD DATA TYPE', '/api/topics', 
+               'POST Bad Data Type', '/api/topics', 
                'The request to Topic cannot be completed check for invalid data types, empty data or non existent endopints',
                { slug: 'coding', description: 1001 }
             ],
@@ -313,7 +337,28 @@ describe('API tests', () => {
                'POST Empty Data', '/api/topics', 
                'The request to Topic cannot be completed check for invalid data types, empty data or non existent endopints',
                { slug: 'coding', description: '' }
-            ]
+            ],
+            // COMMENTS TESTS
+            [
+               'START API COMMENTS POST TESTING --------->', '/api/articles/1/comments', 
+               'The request to Comments cannot be completed check for invalid data types, empty data or non existent endopints',
+               { username: 'lurker', body: ''}
+            ],
+            [
+               'POST Empty Data', '/api/articles/1/comments', 
+               'The request to Comments cannot be completed check for invalid data types, empty data or non existent endopints',
+               { username: 'lurker', body: ''}
+            ],
+            [
+               'POST Bad Data Type', '/api/articles/1/comments', 
+               'The request to Comments cannot be completed check for invalid data types, empty data or non existent endopints',
+               { username: 'lurker', body: 1234 }
+            ],
+            [
+               'POST Incomplete', '/api/articles/1/comments', 
+               'The request to Comments cannot be completed check for invalid data types, empty data or non existent endopints',
+               { username: 'lurker'}
+            ],
          ]
          test.concurrent.each(parametricEndpoints)
          ('%s(%s)', (reqName, path, expected, body) => {
