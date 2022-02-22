@@ -6,6 +6,7 @@ const {
    patchArticleVotesByID,
    getUsers,
    getCommentsByArticle,
+   postComment,
    deleteComment,
 } = require('./controllers/app.controller')
 
@@ -21,7 +22,7 @@ const app = express()
 
 app.use(express.json())
 
-// -----------~~~=:%$}> GET REQUEST <{$%:=~~~-----------
+// -----------~~~=*%$}> GET REQUEST <{$%*=~~~-----------
 // TOPICS
 app.get('/api/topics', getTopics)
 app.get('/api/articles', getArticles)
@@ -34,22 +35,25 @@ app.get('/api/articles/:id/comments', getCommentsByArticle)
 app.get('/api/users', getUsers)
 
 
-// -----------~~~=:%$}> PATCH REQUESTS <{$%:=~~~-----------
+// -----------~~~=*%$}> PATCH REQUESTS <{$%*=~~~-----------
 // ARTICLES
 app.patch('/api/articles/:id', patchArticleVotesByID)
 
 
-// -----------~~~=:%$}> POST REQUESTS <{$%:=~~~-----------
+// -----------~~~=*%$}> POST REQUESTS <{$%*=~~~-----------
 // TOPICS
 app.post('/api/topics', postTopic)
 
+// COMMENTS
+app.post('/api/articles/:id/comments', postComment)
 
-// -----------~~~=:%$}> DELETE REQUESTS <{$%:=~~~-----------
+
+// -----------~~~=*%$}> DELETE REQUESTS <{$%*=~~~-----------
 // COMMENTS
 app.delete('/api/comments/:id', deleteComment)
 
 
-// -----------~~~=:%$}> ERROR HANDLING <{$%:=~~~-----------
+// -----------~~~=*%$}> ERROR HANDLING <{$%*=~~~-----------
 app.all('/*', send404)
 app.use(handleCustomErrors)
 app.use(handlePSQLErrors)

@@ -1,6 +1,6 @@
 const db = require('../db/connection')
 
-// -----------~~~=:%$}> UTILITY PROMISE REJECTS <{$%:=~~~-----------
+// -----------~~~=*%$}> UTILITY PROMISE REJECTS <{$%*=~~~-----------
 
 // RETURNS a rejected promise for invalid PARAMETERS ---> this is to be wrapped in a if / logic block to function properly
 const handleInvalid = (api) => {
@@ -19,16 +19,27 @@ const handleEmptyResult = (api, param, ) => {
    })
 }
 
-// -----------~~~=:%$}> USERS <{$%:=~~~-----------
+
+// -----------~~~=*%$}> UTILITY FUNCTIONS <{$%*=~~~-----------
+const checkValidity = (array, type) => {
+   return !type 
+   ? array.some(item => !item)
+   : array.some(item => typeof item !== type)
+
+}
+
+
+// -----------~~~=*%$}> USERS <{$%*=~~~-----------
 exports.selectUsers = async () => {
    const result = await db.query('SELECT * FROM users;')
    return result.rows
 }
 
-// -----------~~~=:%$}> COMMENTS <{$%:=~~~-----------
+// -----------~~~=*%$}> COMMENTS <{$%*=~~~-----------
 
 // SELECT Comments
-const selectCommentsInternal = async (id, internal = false) => {
+const selectComments = async (id, internal = false) => {
+   // CATCH undefined/missing paramaters AND invalid data types
    if (!+id) { return handleInvalid('Comments')}
 
    // UPDATE DB using invoked paramaters
@@ -44,12 +55,34 @@ const selectCommentsInternal = async (id, internal = false) => {
    if (internal) return result.rows.length
    if (!internal) return result.rows
 }
-exports.selectComments = (id) => selectCommentsInternal(id)
+exports.selectComments = (id) => selectComments(id)
+
+
+// POST Comment
+exports.insertComment = async (id, username, body) => {
+   // CATCH Variables
+   const params = [ username, body ]
+   // CATCH undefined/missing paramaters AND invalid data types
+   if (!body || ! username || !+id) { return handleInvalid('Comments') }
+   if (checkValidity(params, 'string')) { return handleInvalid('Comments')}
+   
+   // CATCH 
+   
+   const result = await db.query(`
+   INSERT INTO comments 
+   (author, body, article_id)
+   VALUES
+   ($1, $2, $3)
+   RETURNING *;`,
+   [username, body, id])
+
+   return result.rows[0]
+}
 
 // DELETE Comments
 exports.removeComment = async (id) => {
 
-   // CATCH Invalid Paramater Formats
+   // CATCH undefined/missing paramaters AND invalid data types
    if (!+id) return handleInvalid('Comments')
 
    // UPDATE DB using invoked paramaters
@@ -61,7 +94,7 @@ exports.removeComment = async (id) => {
    return result
 }
 
-// -----------~~~=:%$}> TOPICS <{$%:=~~~-----------
+// -----------~~~=*%$}> TOPICS <{$%*=~~~-----------
 
 // SELECT Topics
 exports.selectTopics = async () => {
@@ -74,11 +107,10 @@ exports.selectTopics = async () => {
 
 // INSERT Topics
 exports.insertTopic = async (slug, description) => {
-
+   const params = [ slug, description ]
    // CATCH undefined/missing paramaters AND invalid data types
-   if (!slug || !description) { return handleInvalid('Topic') }
-   if (typeof slug !== 'string') { return handleInvalid('Topic')}
-   if (typeof description !== 'string') { return handleInvalid('Topic')}
+   if (!slug || !description) return handleInvalid('Topic') 
+   if (checkValidity(params, 'string')) return handleInvalid('Topic')
    
 
    // INSERT into DB with invoked paramaters
@@ -93,7 +125,7 @@ exports.insertTopic = async (slug, description) => {
 
 }
 
-// -----------~~~=:%$}> ARTICLES <{$%:=~~~-----------
+// -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
 
 // SELECT Articles
 exports.selectArticles = async () => {
@@ -123,9 +155,7 @@ exports.selectArticleByID = async (id) => {
 
    // APPEND Comment Count
    const {...rest} = result.rows[0]
-   rest.comment_count = await selectCommentsInternal(id, true)
-   
-
+   rest.comment_count = await selectComments(id, true)
 
    return rest
 
@@ -135,8 +165,8 @@ exports.selectArticleByID = async (id) => {
 exports.updateArticleVotesByID = async (id, voteCount) => {
 
    // CATCH Invalid Paramater Formats
-   if (!+id) { return handleInvalid('Articles')}
-   if (!+voteCount) { return handleInvalid('Articles')}
+   if (!+id || !+voteCount) { return handleInvalid('Articles') }
+
 
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
