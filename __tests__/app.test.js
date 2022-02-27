@@ -3,6 +3,7 @@ const db = require("../db/connection")
 const request = require('supertest')
 const testData = require('../db/data/test-data')
 const seed = require('../db/seeds/seed')
+require('jest-sorted')
 
 beforeEach(() => seed(testData))
 
@@ -91,6 +92,8 @@ describe('\nAPI Tests', () => {
    })
 
    // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
+
+   // Utility functions
    
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES GET /api/articles', () => {
@@ -193,6 +196,111 @@ describe('\nAPI Tests', () => {
                .expect(200)
                .then((result) => {
                   expect(result.body.votes).toEqual(90)
+               })
+            })
+         })
+      })
+      describe('\n4. ARTICLES QUERIES GET', () => {
+         test('STATUS 200: should return the articles sorted by date', () => {
+            return request(app)
+            .get('/api/articles?sort_by=')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body
+               expect(body).toBeInstanceOf(Array)
+               expect(articles).toBeSortedBy('created_at', {
+                  descending: true,
+               })
+               articles.forEach((article) => {
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
+               })
+            })
+         })
+         test('STATUS 200: should return the articles sorted by alphabetically by title', () => {
+            return request(app)
+            .get('/api/articles?sort_by=title')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body
+               expect(body).toBeInstanceOf(Array)
+               expect(articles[0].title).toBe('A')
+               expect(articles).toBeSortedBy('title', {
+                  descending: false,
+               })
+               articles.forEach((article) => {
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
+               })
+            })
+         })
+         test('STATUS 200: should return the articles sorted by alphabetically by title in decending order', () => {
+            return request(app)
+            .get('/api/articles?sort_by=title&order=desc')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body
+               expect(body).toBeInstanceOf(Array)
+               expect(articles[0].title).toBe('Z')
+               expect(articles).toBeSortedBy('title', {
+                  descending: true,
+               })
+               articles.forEach((article) => {
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
+               })
+            })
+         })
+         test('STATUS 200: should return the articles filtered by the topic cats', () => {
+            return request(app)
+            .get('/api/articles?sort_by=title&order=desc&topic=cats')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body
+               expect(body).toBeInstanceOf(Array)
+               expect(articles).toBeSortedBy('title', {
+                  descending: true,
+               })
+               articles.forEach((article) => {
+                  expect(article.topic).toBe('cats')
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
                })
             })
          })
