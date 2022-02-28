@@ -42,7 +42,8 @@ exports.postTopic = (req, res, next) => {
 // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
 // GET Articles
 exports.getArticles = (req, res, next) => {
-   selectArticles().then((result) => res.status(200).send(result))
+   const { sort_by, order, topic } = req.query
+   selectArticles(sort_by, order, topic).then((result) => res.status(200).send(result))
    .catch((error) => next(error))
 }
 

@@ -19,7 +19,8 @@ const handleEmptyResult = (api, param, ) => {
 }
 
 // -----------~~~=*%$}> UTILITY FUNCTIONS <{$%*=~~~-----------
-const checkValidity = (array, type) => {
+// CHECKS input paramaters to save on if statements
+const checkValid = (array, type) => {
    return !type 
    ? array.some(item => !item)
    : array.some(item => typeof item !== type)
@@ -36,14 +37,16 @@ exports.selectUsers = async () => {
 // SELECT Users By Username
 exports.selectUserByUsername = async (username) => {
 
-   // if (!username) { return handleInvalid('Users')}
-   if (typeof username !== 'string') { return handleInvalid('Users')}
+   // CATCH undefined/missing paramaters AND invalid data types
+   if (typeof username !== 'string') { return handleInvalid('Users') }
 
+   // QUERY DB to return user by username
    const result = await db.query(`
    SELECT * FROM users
    WHERE username = $1`,
    [username])
 
+   // CATCH Empty Results
    if (!result.rows[0]) { return handleEmptyResult('Users', username) }
 
    return result.rows[0]
@@ -53,8 +56,9 @@ exports.selectUserByUsername = async (username) => {
 
 // SELECT Comments
 const selectComments = async (id, internal = false) => {
+
    // CATCH undefined/missing paramaters AND invalid data types
-   if (!+id) { return handleInvalid('Comments')}
+   if (!+id) { return handleInvalid('Comments') }
 
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
@@ -65,24 +69,21 @@ const selectComments = async (id, internal = false) => {
    // CATCH Empty Results
    if (!result.rows) { return handleEmptyResult('Comments', id) }
 
-   // DETERMINE OUTPUT based on query
-   if (internal) return result.rows.length
-   if (!internal) return result.rows
+   // DETERMINE OUTPUT based on query, internal queries return number of comments 
+   // to be appended onto the article object when using exports.selectArticleByID
+   return !internal ? result.rows : result.rows.length
+
 }
 exports.selectComments = (id) => selectComments(id)
 
 // POST Comment
 exports.insertComment = async (id, username, body) => {
-   
-   // CATCH Variables
-   const params = [ username, body ]
 
    // CATCH undefined/missing paramaters AND invalid data types
    if (!body || ! username || !+id) { return handleInvalid('Comments') }
-   if (checkValidity(params, 'string')) { return handleInvalid('Comments')}
-   
-   // CATCH 
-   
+   if (checkValid([ username, body ], 'string')) { return handleInvalid('Comments') }
+
+   // UPDATE DB using invoked paramaters
    const result = await db.query(`
    INSERT INTO comments 
    (author, body, article_id)
@@ -98,7 +99,7 @@ exports.insertComment = async (id, username, body) => {
 exports.removeComment = async (id) => {
 
    // CATCH undefined/missing paramaters AND invalid data types
-   if (!+id) return handleInvalid('Comments')
+   if (!+id) { return handleInvalid('Comments') }
 
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
@@ -122,11 +123,10 @@ exports.selectTopics = async () => {
 
 // INSERT Topics
 exports.insertTopic = async (slug, description) => {
-   const params = [ slug, description ]
+
    // CATCH undefined/missing paramaters AND invalid data types
-   if (!slug || !description) return handleInvalid('Topic') 
-   if (checkValidity(params, 'string')) return handleInvalid('Topic')
-   
+   if (!slug || !description) { return handleInvalid('Topic') }
+   if (checkValid([ slug, description ], 'string')) { return handleInvalid('Topic') }
 
    // INSERT into DB with invoked paramaters
    const result = await db.query(`
@@ -143,14 +143,43 @@ exports.insertTopic = async (slug, description) => {
 // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
 
 // SELECT Articles
-exports.selectArticles = async () => {
+exports.selectArticles = async (sortBy, ascOrDesc, topic) => {
 
    // QUERY DB for articles
-   const result = await db.query(`
-   SELECT * FROM articles;
-   `)
+   const result = await db.query(`SELECT * FROM articles;`)
 
-   return result.rows
+   // SORTS the RESULT of the query
+   const sorter = (array, sortBy, sortOrder) => {
+
+      // SET the default sort query
+      if (!sortBy) sortBy = 'created_at'
+      return array.sort((a, b) => {
+
+         // STORE sorting variables in a ternary operator that determines ascending or descending results 
+         const order = sortOrder === 'desc' ? [b, a] : [a, b]
+
+         // SORT dates by getting a numerical value from the string date value
+         if (sortBy === 'created_at') {
+            const dateA = new Date(order[0].created_at).getTime().toString()
+            const dateB = new Date(order[1].created_at).getTime().toString()
+            return dateB.localeCompare(dateA, undefined, { numeric: true })
+         }
+         // DEFAULT return for anything thats not the created_at value property
+         return order[0][sortBy].localeCompare(order[1][sortBy])
+         }
+      )
+   }
+
+   // STORED sorted results in a variable for improved readability
+   const sorted = sorter(result.rows, sortBy, ascOrDesc)
+
+   // FILTERS the sorted results by TOPIC, if there is no TOPIC it returns the sorted results
+   const filterByTopic = (array) => {
+      if (!topic) { return array }
+      return array.filter((item) => item.topic === topic)
+   }
+
+   return filterByTopic(sorted, topic)
 }
 
 // SELECT Articles By ID
@@ -180,7 +209,6 @@ exports.updateArticleVotesByID = async (id, voteCount) => {
 
    // CATCH Invalid Paramater Formats
    if (!+id || !+voteCount) { return handleInvalid('Articles') }
-
 
    // UPDATE DB using invoked paramaters
    const result = await db.query(`
