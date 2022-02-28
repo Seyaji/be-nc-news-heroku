@@ -19,6 +19,7 @@ const handleEmptyResult = (api, param, ) => {
 }
 
 // -----------~~~=*%$}> UTILITY FUNCTIONS <{$%*=~~~-----------
+// CHECKS input paramaters to save on if statements
 const checkValid = (array, type) => {
    return !type 
    ? array.some(item => !item)
@@ -68,24 +69,21 @@ const selectComments = async (id, internal = false) => {
    // CATCH Empty Results
    if (!result.rows) { return handleEmptyResult('Comments', id) }
 
-   // DETERMINE OUTPUT based on query
-   if (internal) return result.rows.length
-   if (!internal) return result.rows
+   // DETERMINE OUTPUT based on query, internal queries return number of comments 
+   // to be appended onto the article object when using exports.selectArticleByID
+   return !internal ? result.rows : result.rows.length
+
 }
 exports.selectComments = (id) => selectComments(id)
 
 // POST Comment
 exports.insertComment = async (id, username, body) => {
-   
-   // CATCH Variables
-   const params = [ username, body ]
 
    // CATCH undefined/missing paramaters AND invalid data types
    if (!body || ! username || !+id) { return handleInvalid('Comments') }
-   if (checkValid(params, 'string')) { return handleInvalid('Comments') }
-   
-   // CATCH 
-   
+   if (checkValid([ username, body ], 'string')) { return handleInvalid('Comments') }
+
+   // UPDATE DB using invoked paramaters
    const result = await db.query(`
    INSERT INTO comments 
    (author, body, article_id)
@@ -153,27 +151,26 @@ exports.selectArticles = async (sortBy, ascOrDesc, topic) => {
    // SORTS the RESULT of the query
    const sorter = (array, sortBy, sortOrder) => {
 
-      // Determine the default sort query
+      // SET the default sort query
       if (!sortBy) sortBy = 'created_at'
       return array.sort((a, b) => {
 
-         // Store sorting variables in an array and reverse the order for descending results 
-         let order = [a, b]
-         if (sortOrder === 'desc') order = order.reverse()
+         // STORE sorting variables in a ternary operator that determines ascending or descending results 
+         const order = sortOrder === 'desc' ? [b, a] : [a, b]
 
-         // Sort dates by getting a numerical value from the string date value
+         // SORT dates by getting a numerical value from the string date value
          if (sortBy === 'created_at') {
             const dateA = new Date(order[0].created_at).getTime().toString()
             const dateB = new Date(order[1].created_at).getTime().toString()
             return dateB.localeCompare(dateA, undefined, { numeric: true })
          }
-         // Default return for anything thats not the created_at value
+         // DEFAULT return for anything thats not the created_at value property
          return order[0][sortBy].localeCompare(order[1][sortBy])
          }
       )
    }
 
-   // STORED  sorted results in a variable for improved readability
+   // STORED sorted results in a variable for improved readability
    const sorted = sorter(result.rows, sortBy, ascOrDesc)
 
    // FILTERS the sorted results by TOPIC, if there is no TOPIC it returns the sorted results

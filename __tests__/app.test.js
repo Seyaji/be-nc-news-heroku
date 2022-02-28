@@ -93,8 +93,6 @@ describe('\nAPI Tests', () => {
 
    // -----------~~~=*%$}> ARTICLES <{$%*=~~~-----------
 
-   // Utility functions
-   
    describe('\n\n/api/articles TESTS --------->', () => {
       describe('\n1. ARTICLES GET /api/articles', () => {
          test('STATUS 200: responds with an ARRAY of ARTICLES each containing a USERNAME and all ARTICLE PROPERTIES', () => {
