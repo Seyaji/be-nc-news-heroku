@@ -76,7 +76,7 @@ const selectComments = async (id, internal = false) => {
 }
 exports.selectComments = (id) => selectComments(id)
 
-// POST Comment
+// INSERT Comment
 exports.insertComment = async (id, username, body) => {
 
    // CATCH undefined/missing paramaters AND invalid data types
@@ -121,7 +121,7 @@ exports.selectTopics = async () => {
 
 }
 
-// INSERT Topics
+// INSERT Topic
 exports.insertTopic = async (slug, description) => {
 
    // CATCH undefined/missing paramaters AND invalid data types
