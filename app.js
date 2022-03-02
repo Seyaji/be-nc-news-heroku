@@ -7,6 +7,7 @@ const {
    getUsers,
    getUserByUsername,
    getCommentsByArticle,
+   patchCommentByID,
    postComment,
    deleteComment,
 } = require('./controllers/app.controller')
@@ -40,6 +41,9 @@ app.get('/api/users/:username', getUserByUsername)
 // -----------~~~=*%$}> PATCH REQUESTS <{$%*=~~~-----------
 // ARTICLES
 app.patch('/api/articles/:id', patchArticleVotesByID)
+
+// COMMENTS
+app.patch('/api/comments/:id', patchCommentByID)
 
 
 // -----------~~~=*%$}> POST REQUESTS <{$%*=~~~-----------

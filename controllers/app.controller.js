@@ -7,6 +7,7 @@ const {
    updateArticleVotesByID,
    selectComments,
    insertComment,
+   updateCommentByID,
    removeComment,
    insertTopic,
 } = require('../models/app.model')
@@ -54,7 +55,7 @@ exports.getArticleByID = (req, res, next) => {
    .catch((error) => next(error))
 }
 
-// Patch Article By ID
+// PATCH Article By ID
 exports.patchArticleVotesByID = (req, res, next) => {
    const { id } = req.params
    const { inc_votes } = req.body
@@ -68,11 +69,20 @@ exports.patchArticleVotesByID = (req, res, next) => {
 // GET Comments By Article ID
 exports.getCommentsByArticle = (req, res, next) => {
    const { id } = req.params
+   const { inc_votes } = req.body
    selectComments(id).then((result) => res.status(200).send(result))
    .catch((error) => next(error))
 }
 
-// POST COMMENT By Article ID
+// PATCH Comment By ID
+exports.patchCommentByID = (req, res, next) => {
+   const { id } = req.params
+   const { inc_votes } = req.body
+   updateCommentByID(id, inc_votes).then((result) => res.status(201).send(result))
+   .catch((error) => next(error))
+}
+
+// POST Comment By Article ID
 exports.postComment = (req, res, next) => {
    const { id } = req.params
    const { username, body } = req.body
@@ -80,7 +90,7 @@ exports.postComment = (req, res, next) => {
    .catch((error) => next(error))
 }
 
-// DELETE comment by ID
+// DELETE Comment by ID
 exports.deleteComment = (req, res, next) => {
    const { id } = req.params
    removeComment(id).then((result) => res.status(204).send(result))

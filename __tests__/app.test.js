@@ -327,13 +327,10 @@ describe('\nAPI Tests', () => {
                      })
                   )
                })
-            
-               
             })
-   
          })
       })
-      describe('\n2. COMMENTS PATCH /api/comments', () => {
+      describe('\n2. COMMENTS DELETE /api/comments', () => {
          test('STATUS 204: should delete a comment that has the matching comment id', () => {
             return request(app)
             .delete('/api/comments/1')
@@ -351,6 +348,48 @@ describe('\nAPI Tests', () => {
                expect(body).toEqual(
                   expect.objectContaining({
                      article_id: expect.any(Number),
+                     comment_id: expect.any(Number),
+                     votes: expect.any(Number),
+                     created_at: expect.any(String),
+                     author: expect.any(String),
+                     body: expect.any(String),
+                  })
+               )
+            })
+         })
+      })
+      describe('\n3. COMMENTS BY ID PATCH /api/comments/:id', () => {
+         test('STATUS 201: RETURNS the comment and INCREMENTS the article VOTES when given an ID and VALID body object', () => {
+            const newVote = { inc_votes: 10 }
+            return request(app)
+            .patch('/api/comments/1')
+            .send(newVote)
+            .expect(201)
+            .then((result) => {
+               const comment = result.body
+               expect(comment.votes).toEqual(26)
+               expect(comment).toEqual(
+                  expect.objectContaining({
+                     comment_id: expect.any(Number),
+                     votes: expect.any(Number),
+                     created_at: expect.any(String),
+                     author: expect.any(String),
+                     body: expect.any(String),
+                  })
+               )
+            })
+         })
+         test('STATUS 201: RETURNS the comment and DECREMENTS the article VOTES when given an ID and VALID body object', () => {
+            const newVote = { inc_votes: - 10 }
+            return request(app)
+            .patch('/api/comments/1')
+            .send(newVote)
+            .expect(201)
+            .then((result) => {
+               const comment = result.body
+               expect(comment.votes).toEqual(6)
+               expect(comment).toEqual(
+                  expect.objectContaining({
                      comment_id: expect.any(Number),
                      votes: expect.any(Number),
                      created_at: expect.any(String),

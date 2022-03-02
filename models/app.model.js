@@ -95,6 +95,26 @@ exports.insertComment = async (id, username, body) => {
    return result.rows[0]
 }
 
+// UPDATE Comment by ID
+exports.updateCommentByID = async (id, voteCount) => {
+
+   // CATCH Invalid Paramater Formats
+   if (!+id || !+voteCount) { return handleInvalid('Comments') }
+
+   // UPDATE DB using invoked paramaters
+   const result = await db.query(`
+   UPDATE comments 
+   SET votes = votes + $1
+   WHERE comment_id = $2
+   RETURNING *;`,
+   [voteCount, id])
+
+   // CATCH Empty Results
+   if (!result.rows[0]) { return handleEmptyResult('Comments', id) }
+
+   return result.rows[0]
+}
+
 // DELETE Comments
 exports.removeComment = async (id) => {
 
