@@ -211,7 +211,8 @@ exports.selectArticleByID = async (id) => {
    // QUERY DB to find article by ID
    const result = await db.query(`
    SELECT * FROM articles
-   WHERE article_id = ${id};`)
+   WHERE article_id = $1;`,
+   [id])
 
    // CATCH Empty Results
    if (!result.rows[0]) { return handleEmptyResult('Article', id) }
