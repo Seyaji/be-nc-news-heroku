@@ -80,7 +80,7 @@ exports.selectComments = (id) => selectComments(id)
 exports.insertComment = async (id, username, body) => {
 
    // CATCH undefined/missing paramaters AND invalid data types
-   if (!body || ! username || !+id) { return handleInvalid('Comments') }
+   if (!body || !username || !+id) { return handleInvalid('Comments') }
    if (checkValid([ username, body ], 'string')) { return handleInvalid('Comments') }
 
    // UPDATE DB using invoked paramaters
