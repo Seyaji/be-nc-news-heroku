@@ -100,8 +100,8 @@ describe('\nAPI Tests', () => {
             .get('/api/articles')
             .expect(200)
             .then(({ body }) => {
-               const articles = body
-               expect(body).toBeInstanceOf(Array)
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
                articles.forEach(article => {
                   expect(article).toEqual(
                      expect.objectContaining({
@@ -123,9 +123,9 @@ describe('\nAPI Tests', () => {
             return request(app)
             .get('/api/articles/1')
             .expect(200)
-            .then((result) => {
-               expect(result.body.article_id).toBe(1)
-               expect(result.body).toEqual(
+            .then(( { body } ) => {
+               expect(body.article_id).toBe(1)
+               expect(body).toEqual(
                   expect.objectContaining({
                      article_id: expect.any(Number),
                      title: expect.any(String),
@@ -147,8 +147,8 @@ describe('\nAPI Tests', () => {
             .patch('/api/articles/1')
             .send(newVote)
             .expect(201)
-            .then((result) => {
-               expect(result.body).toEqual(
+            .then(( { body } ) => {
+               expect(body).toEqual(
                   expect.objectContaining({
                      article_id: expect.any(Number),
                      title: expect.any(String),
@@ -164,8 +164,8 @@ describe('\nAPI Tests', () => {
                return request(app)
                .get('/api/articles/1')
                .expect(200)
-               .then((result) => {
-                  expect(result.body.votes).toEqual(110)
+               .then(( { body } ) => {
+                  expect(body.votes).toEqual(110)
                })
             })
          })
@@ -175,8 +175,8 @@ describe('\nAPI Tests', () => {
             .patch('/api/articles/1')
             .send(newVote)
             .expect(201)
-            .then((result) => {
-               expect(result.body).toEqual(
+            .then(( { body } ) => {
+               expect(body).toEqual(
                   expect.objectContaining({
                      article_id: expect.any(Number),
                      title: expect.any(String),
@@ -204,8 +204,8 @@ describe('\nAPI Tests', () => {
             .get('/api/articles?sort_by=')
             .expect(200)
             .then(({ body }) => {
-               const articles = body
-               expect(body).toBeInstanceOf(Array)
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
                expect(articles).toBeSortedBy('created_at', {
                   descending: true,
                })
@@ -229,8 +229,8 @@ describe('\nAPI Tests', () => {
             .get('/api/articles?sort_by=title')
             .expect(200)
             .then(({ body }) => {
-               const articles = body
-               expect(body).toBeInstanceOf(Array)
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
                expect(articles[0].title).toBe('A')
                expect(articles).toBeSortedBy('title', {
                   descending: false,
@@ -255,8 +255,8 @@ describe('\nAPI Tests', () => {
             .get('/api/articles?sort_by=title&order=desc')
             .expect(200)
             .then(({ body }) => {
-               const articles = body
-               expect(body).toBeInstanceOf(Array)
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
                expect(articles[0].title).toBe('Z')
                expect(articles).toBeSortedBy('title', {
                   descending: true,
@@ -281,8 +281,8 @@ describe('\nAPI Tests', () => {
             .get('/api/articles?sort_by=title&order=desc&topic=cats')
             .expect(200)
             .then(({ body }) => {
-               const articles = body
-               expect(body).toBeInstanceOf(Array)
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
                expect(articles).toBeSortedBy('title', {
                   descending: true,
                })

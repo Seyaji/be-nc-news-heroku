@@ -44,14 +44,14 @@ exports.postTopic = (req, res, next) => {
 // GET Articles
 exports.getArticles = (req, res, next) => {
    const { sort_by, order, topic } = req.query
-   selectArticles(sort_by, order, topic).then((result) => res.status(200).send(result))
+   selectArticles(sort_by, order, topic).then((articles) => res.status(200).send({ articles }))
    .catch((error) => next(error))
 }
 
 // GET Article By ID
 exports.getArticleByID = (req, res, next) => {
    const { id }  = req.params
-   selectArticleByID(id).then((result) => res.status(200).send(result))
+   selectArticleByID(id).then((article) => res.status(200).send(article))
    .catch((error) => next(error))
 }
 
