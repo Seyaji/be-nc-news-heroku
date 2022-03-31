@@ -276,6 +276,31 @@ describe('\nAPI Tests', () => {
                })
             })
          })
+         test('STATUS 200: should return the articles sorted by votes in decending order', () => {
+            return request(app)
+            .get('/api/articles?sort_by=votes&order=desc')
+            .expect(200)
+            .then(({ body }) => {
+               const articles = body.articles
+               expect(articles).toBeInstanceOf(Array)
+               expect(articles).toBeSortedBy('votes', {
+                  descending: true,
+               })
+               articles.forEach((article) => {
+                  expect(article).toEqual(
+                     expect.objectContaining({
+                        article_id: expect.any(Number),
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                     })
+                  )
+               })
+            })
+         })
          test('STATUS 200: should return the articles filtered by the topic cats', () => {
             return request(app)
             .get('/api/articles?sort_by=title&order=desc&topic=cats')

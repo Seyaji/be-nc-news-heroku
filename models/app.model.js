@@ -184,6 +184,12 @@ exports.selectArticles = async (sortBy, ascOrDesc, topic) => {
             const dateB = new Date(order[1].created_at).getTime().toString()
             return dateB.localeCompare(dateA, undefined, { numeric: true })
          }
+
+         if (sortBy === 'votes') {
+            const votesA = order[0].votes.toString()
+            const votesB = order[1].votes.toString()
+            return votesA.localeCompare(votesB, undefined, { numeric: true})
+         }
          // DEFAULT return for anything thats not the created_at value property
          return order[0][sortBy].localeCompare(order[1][sortBy])
          }
